@@ -1,0 +1,72 @@
+<html>
+<head>
+<title>Title</title>
+<style>
+</style>
+</head>
+<body>
+<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+/*
+ * Minifies a multiline js string.
+ * Removes comments, trims leading/trailing whitespace,
+ * and replaces EOLs with a space.
+ */
+ function minify(js) {
+     var lines = js.split("\n");
+     $(lines).each(function(idx, line) {
+         // remove comments
+         if (line.indexOf("//") != -1) {
+             line = line.substring(0, line.indexOf("//"));
+         }
+         // trim whitespace
+         line = $.trim(line);
+         lines[idx] = line;
+     });
+     // replace EOLs with a space
+     return lines.join(" ");
+ }
+
+ $(function() {
+	$("#submit-button").click(function() {
+		// get values
+		var url = $("#url").val();
+		var js = $("#js").val();
+		
+		// minify js
+		var js = minify(js);
+		
+		// generate url
+		var href = window.location.href.substring(0, window.location.href.lastIndexOf("/")) +
+		   "/echo.php?" +
+           "&u=" + escape(url) +
+           "&js=" + escape(js);
+
+        var justJs = "javascript:" + escape(js) + ";void(0);";
+		$("#echolink").html(href);
+		$("#javascript").html(justJs);
+		$("#results").show();
+	});
+ });
+</script>
+<div>
+	<label>url</label><input id="url" style="min-width: 600px"></input>
+</div>
+<div>
+	<label>js</label><textarea id="js" rows="10" cols="100"></textarea>
+</div>
+<div>
+	<button id="submit-button">generate</button>
+</div>
+<div id="results" style="display: none;">
+<div>
+	<label>generated echolink: </label><pre id="echolink"></pre>
+</div>
+<div>
+	<label>generated javascript: </label><pre id="javascript"></pre>
+</div>
+</div>
+</body>
+</html>
